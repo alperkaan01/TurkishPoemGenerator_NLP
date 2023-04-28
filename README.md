@@ -1,4 +1,5 @@
-#TurkishPoemGenerator_NLP
+# TurkishPoemGenerator_NLP
+
 TurkishPoemGenerator_NLP is a project that demonstrates the use of natural language processing (NLP) techniques to generate Turkish poems using a fine-tuned GPT-2 model.
 
 Project Overview
