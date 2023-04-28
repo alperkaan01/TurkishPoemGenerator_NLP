@@ -8,13 +8,6 @@ The project involves collecting a dataset of Turkish poems, pre-processing the d
 
 The project uses Python and various NLP libraries, including `transformers`, `pandas`, and `numpy`. The pre-processing steps include cleaning the data, tokenizing the text, and creating input sequences for the model.
 
-## Installation
-
-To install the necessary dependencies for the project, run the following command in your terminal:
-
-```pip install -r requirements.txt```
-
-This will install all the required libraries listed in the `requirements.txt` file.
 
 ## Usage
 
