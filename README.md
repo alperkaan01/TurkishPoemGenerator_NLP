@@ -1,46 +1,35 @@
 # TurkishPoemGenerator_NLP
 
-TurkishPoemGenerator_NLP is a project that demonstrates the use of natural language processing (NLP) techniques to generate Turkish poems using a fine-tuned GPT-2 model.
+`TurkishPoemGenerator_NLP` is a project that demonstrates the use of natural language processing (NLP) techniques to generate Turkish poems using a fine-tuned GPT-2 model.
 
-Project Overview
+## Project Overview
+
 The project involves collecting a dataset of Turkish poems, pre-processing the data, fine-tuning a GPT-2 model on the pre-processed data, and generating new poems using the fine-tuned model.
 
-The project uses Python and various NLP libraries, including transformers, pandas, and numpy. The transformers library is used to load and fine-tune the GPT-2 model, while pandas and numpy are used for data pre-processing and manipulation.
+The project uses Python and various NLP libraries, including `transformers`, `pandas`, and `numpy`. The pre-processing steps include cleaning the data, tokenizing the text, and creating input sequences for the model.
 
-Getting Started
-Prerequisites
-To run the project, you'll need the following:
+## Installation
 
-Python 3.x
-transformers, pandas, and numpy libraries
-Installing
-To install the required libraries, run:
+To install the necessary dependencies for the project, run the following command in your terminal:
 
-Copy code
-pip install -r requirements.txt
-Usage
-To generate new Turkish poems using the pre-trained GPT-2 model, run:
+```pip install -r requirements.txt```
 
-Copy code
-python generate_poems.py
-The generated poems will be saved to a file named generated_poems.txt.
+This will install all the required libraries listed in the `requirements.txt` file.
 
-Dataset
-The dataset used for the project is a collection of Turkish poems in CSV format. The dataset is included in the data directory.
+## Usage
 
-Fine-Tuning the Model
-To fine-tune the GPT-2 model on the Turkish poems dataset, run:
+To use the model to generate new Turkish poems, follow these steps:
 
-Copy code
-python train.py
-This will save the fine-tuned model to the output directory.
+1. Clone the repository to your local machine.
+2. Download the Turkish poems dataset and save it in the `data` directory.
+3. Run the `preprocess_data.py` script to pre-process the data.
+4. Run the `train_model.py` script to fine-tune the GPT-2 model.
+5. Run the `generate_poem.py` script to generate new poems.
 
-Evaluation
-The generated poems can be evaluated using perplexity and human evaluation. The implementation of these metrics is included in the evaluation.py file.
+## Contributing
 
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+Contributions to the project are welcome! If you find a bug or have a feature request, please open an issue on the project's GitHub repository.
 
-Acknowledgments
-This project was inspired by the work of OpenAI and the transformers library.
-The Turkish poems dataset used in this project was sourced from various online sources.
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
