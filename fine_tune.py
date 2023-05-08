@@ -64,9 +64,12 @@ class FineTune:
             eval_dataset=eval_dataset,
             data_collator=data_collator
         )
-        trainer.train()
-        accuracy_score = eval_results(trainer, eval_dataset)
-        return accuracy_score
+        try:
+            trainer.train()
+            accuracy_score = eval_results(trainer, eval_dataset)
+            return accuracy_score
+        except:
+            print("Error Occured")
 
     def get_model(self):
         return self.model
