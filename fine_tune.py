@@ -68,8 +68,8 @@ class FineTune:
             trainer.train()
             accuracy_score = eval_results(trainer, eval_dataset)
             return accuracy_score
-        except:
-            print("Error Occured")
+        except Exception as e:
+            print("Error Occured: {e}")
 
     def get_model(self):
         return self.model
