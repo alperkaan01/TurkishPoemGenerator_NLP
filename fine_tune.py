@@ -44,15 +44,17 @@ class FineTune:
     def train(self):
         training_args = self.config.get_property("training_args")
 
-        train_matrix_id = self.train_encodings['input_ids']
-        train_matrix_attention = self.train_encodings['attention_mask']
-        eval_matrix_id = self.eval_encodings['input_ids']
-        eval_matrix_attention = self.eval_encodings['attention_mask']
+        train_matrix_id = torch.tensor(self.train_encodings['input_ids'])
+        train_matrix_attention = torch.tensor(self.train_encodings['attention_mask'])
+        eval_matrix_id = torch.tensor(self.eval_encodings['input_ids'])
+        eval_matrix_attention = torch.tensor(self.eval_encodings['attention_mask'])
 
-        train_dataset = TensorDataset(torch.tensor(train_matrix_id),
-                                      torch.tensor(train_matrix_attention))
-        eval_dataset = TensorDataset(torch.tensor(eval_matrix_id),
-                                     torch.tensor(eval_matrix_attention))
+        print(train_matrix_id)
+
+        train_dataset = TensorDataset(train_matrix_id,
+                                      train_matrix_attention)
+        eval_dataset = TensorDataset(eval_matrix_id,
+                                     eval_matrix_attention)
 
         data_collator = DataCollatorForLanguageModeling(tokenizer=self.tokenizer, mlm=False)
         trainer = Trainer(
