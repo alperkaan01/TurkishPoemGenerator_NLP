@@ -1,9 +1,13 @@
 # install necessary packages
 from transformers \
-    import AutoTokenizer, GPT2LMHeadModel, TrainingArguments,\
-    Trainer, DataCollatorForLanguageModeling, AutoModelForCausalLM
+    import AutoTokenizer, GPT2LMHeadModel, \
+    Trainer, DataCollatorForLanguageModeling, AutoModelForCausalLM, TextDataset
 from data_preparation import PrepareData
+from config import Config
 import evaluate
+import torch
+from torch.utils.data import TensorDataset
+from transformers import default_data_collator
 
 
 def eval_results(trainer, eval_dataset):
@@ -15,38 +19,42 @@ class FineTune:
         self.pretrained_model = pretrained_model
 
         self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model)
-        #self.model = GPT2LMHeadModel(self.pretrained_model)
+        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        # self.model = GPT2LMHeadModel(self.pretrained_model)
         self.model = AutoModelForCausalLM.from_pretrained(self.pretrained_model)
 
-        self.dataset = PrepareData('turkish_poems.csv').get_dataset()
+        prep_data = PrepareData('data/turkish_poems_formatted.csv')  # change here with your csv
+        self.train_df, self.eval_df = prep_data.train_test_split()
+        self.train_df = self.train_df.dropna()
+        self.eval_df = self.eval_df.dropna()
 
-    def tokenize_function(self, arg):
+        self.train_encodings = self.tokenizer(self.train_df['content'].tolist(), padding=True, truncation=True, max_length=512)
+        self.eval_encodings = self.tokenizer(self.eval_df['content'].tolist(), padding=True, truncation=True, max_length=512)
+        self.config = Config()
+
+    """def tokenize_function(self, arg):
         return self.tokenizer(arg['text'], padding=True, truncation=True)
 
     def tokenize_dataset(self, dataset):
         tokenized_dataset = dataset.map(self.tokenize_function, batched=True)
         train_dataset = tokenized_dataset['train']
         eval_dataset = tokenized_dataset['validation']
-        return train_dataset, eval_dataset
+        return train_dataset, eval_dataset"""
 
     def train(self):
-        training_args = TrainingArguments(
-            output_dir='./results',
-            num_train_epochs=1,
-            per_device_train_batch_size=4,
-            per_device_eval_batch_size=4,
-            warmup_steps=500,
-            evaluation_strategy='steps',
-            save_total_limit=2,
-            save_steps=500,
-            logging_steps=500,
-            learning_rate=2e-5,
-            load_best_model_at_end=True
-        )
+        training_args = self.config.get_property("training_args")
 
-        train_dataset, eval_dataset = self.tokenize_dataset(self.dataset)
-        data_collator = DataCollatorForLanguageModeling(tokenizer=self.tokenizer)
+        train_matrix_id = self.train_encodings['input_ids']
+        train_matrix_attention = self.train_encodings['attention_mask']
+        eval_matrix_id = self.eval_encodings['input_ids']
+        eval_matrix_attention = self.eval_encodings['attention_mask']
 
+        train_dataset = TensorDataset(torch.tensor(train_matrix_id),
+                                      torch.tensor(train_matrix_attention))
+        eval_dataset = TensorDataset(torch.tensor(eval_matrix_id),
+                                     torch.tensor(eval_matrix_attention))
+
+        data_collator = DataCollatorForLanguageModeling(tokenizer=self.tokenizer, mlm=False)
         trainer = Trainer(
             model=self.model,
             args=training_args,
@@ -54,9 +62,7 @@ class FineTune:
             eval_dataset=eval_dataset,
             data_collator=data_collator
         )
-
         trainer.train()
-
         accuracy_score = eval_results(trainer, eval_dataset)
         return accuracy_score
 
